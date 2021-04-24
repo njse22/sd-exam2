@@ -1,0 +1,36 @@
+version: '3.7'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres_data
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - postgresql
+
+  goland:
+    build: ./goland/
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      RDS_HOSTNAME: db
+      RDS_PORT: 3306
+      RDS_DB_NAME: data
+      RDS_USERNAME: postgres
+      RDS_PASSWORD: password
+    networks:
+      - postgresql
+
+networks:
+  postgresql:
+    driver: bridge
+
+volumes:
+  postgres_data:
