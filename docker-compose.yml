@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.5'
 services:
   db:
     image: postgres
@@ -16,7 +16,7 @@ services:
     build: ./goland/
     restart: always
     ports:
-      - 5555:5555
+      - 5051:5050
     depends_on:
       - db
     environment:

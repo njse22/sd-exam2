@@ -10,7 +10,7 @@ func main() {
 	http.HandleFunc("/", Start)
 	log.Println("Service start...")
 
-	http.ListenAndServe("5555", nil)
+	http.ListenAndServe(":5050", nil)
 }
 
 func Start(w http.ResponseWriter, r *http.Request){

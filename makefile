@@ -3,16 +3,16 @@ BINARY_NAME=main.out
 
 build: create-volume
 	@docker-compose build
-	go build -o ${GOLAND_DIR}${BINARY_NAME} ${GOLAND_DIR}main.go
 
 create-volume:
 	@docker volume create --name postgres_data 
 
 run:
-	@docker-compose run -d
-	./${GOLAND_DIR}${BINARY_NAME}
+	@docker-compose up -d
 
 clean:
 	go clean
-	rm ${BINARY_NAME}
 
+clean-docker:
+	@docker-compose down
+	@docker volume rm $(shell docker volume ls -q)
