@@ -1,36 +1,47 @@
 version: '3.5'
 services:
   db:
+    container_name: postgres_db 
     image: postgres
+    ports:
+      - "5432:5432"
     restart: always
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
-      POSTGRES_DB: postgres_data
+      APP_DB_USER: adm
+      APP_DB_PASS: pass
+      APP_DB_NAME: postgres
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - postgresql
+      - ./db:/docker-entrypoint-initdb.d/
 
-  goland:
-    build: ./goland/
+    networks:
+      - backend
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 500M
+
+  backend:
+    build: 
+      context: goland
+      dockerfile: Dockerfile
     restart: always
     ports:
-      - 5051:5050
+      - 8080:8080
     depends_on:
       - db
     environment:
       RDS_HOSTNAME: db
-      RDS_PORT: 3306
-      RDS_DB_NAME: data
-      RDS_USERNAME: postgres
-      RDS_PASSWORD: password
     networks:
-      - postgresql
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 500M
 
 networks:
-  postgresql:
-    driver: bridge
-
-volumes:
-  postgres_data:
+  backend:
