@@ -1,5 +1,24 @@
 version: '3.5'
 services:
+  proxy:
+    container_name: nginx_proxy 
+    build: 
+      context: proxy
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - app
+    ports:
+      - 80:80
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 500M
+
+
   db:
     container_name: postgres_db 
     image: postgres
@@ -9,15 +28,13 @@ services:
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
-      APP_DB_USER: adm
-      APP_DB_PASS: pass
+      APP_DB_USER: postgres
+      APP_DB_PASS: password
       APP_DB_NAME: postgres
     volumes:
       - ./db:/docker-entrypoint-initdb.d/
-
     networks:
-      - backend
-    
+      - app
     deploy:
       resources:
         limits:
@@ -26,7 +43,7 @@ services:
 
   backend:
     build: 
-      context: goland
+      context: golang
       dockerfile: Dockerfile
     restart: always
     ports:
@@ -36,7 +53,7 @@ services:
     environment:
       RDS_HOSTNAME: db
     networks:
-      - backend
+      - app
     deploy:
       resources:
         limits:
@@ -44,4 +61,4 @@ services:
           memory: 500M
 
 networks:
-  backend:
+  app:

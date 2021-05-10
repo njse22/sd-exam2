@@ -67,29 +67,19 @@ func Health(w http.ResponseWriter, r *http.Request) {
 
     createConnection()
 
-    
-
-    // format a response object
-    res := response{
-        ID:      insertID,
-        Message: "Song created successfully",
-    }
-
-    // send the response
-    json.NewEncoder(w).Encode(res)
 }
 
 
 
 // create connection with postgres db
 func createConnection() *sql.DB {
-    psqlconn := fmt.Sprintf("postgresql://adm:pass@postgres_db:5432?sslmode=disable")
-    psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-    "password=%s dbname=%s sslmode=disable",
-    host, port, user, password, psqlconn)
+    psqlconn := fmt.Sprintf("postgresql://postgres:password@postgres_db:5432?sslmode=disable")
+    //psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+    //"password=%s dbname=%s sslmode=disable",
+    //host, port, user, password)
 
     // Open the connection
-    db, err := sql.Open("postgres", psqlInfo)
+    db, err := sql.Open("postgres", psqlconn)
 
     if err != nil {
         panic(err)
@@ -169,7 +159,8 @@ func GetSong(w http.ResponseWriter, r *http.Request) {
 func GetAllSongs(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
     w.Header().Set("Access-Control-Allow-Origin", "*")
-    // get all the users in the db
+    
+    var songs []Song
     songs, err := getAllSongs()
 
     if err != nil {
