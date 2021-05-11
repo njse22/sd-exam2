@@ -1,8 +1,5 @@
 default_target: build run
 
-create-volume:
-	@docker volume create --name postgres_data 
-
 build: create-volume
 	@docker-compose build
 
