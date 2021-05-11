@@ -1,13 +1,14 @@
-GOLAND_DIR=./goland/src/
-BINARY_NAME=main.out
+default_target: build run
 
+create-volume:
+	@docker volume create --name postgres_data 
+
+build: create-volume
+	@docker-compose build
 
 run:
-	@docker-compose up -d
+	@docker-compose up
 
 clean:
-	go clean
-
-clean-docker:
 	@docker-compose down
-	@docker volume rm $(shell docker volume ls -q)
+	@docker volume rm $(shell docker volume ls -q) 
