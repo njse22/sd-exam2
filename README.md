@@ -8,6 +8,15 @@
 ##### Prerequisitos
 - Docker- Compose
 - Make
+- go
+- postgresql
+
+###### Para levantar el proyecto:
+make
+
+###### Para hacer el test del proyecto:
+make test
+
 
 ##### ¿Cómo ejecutar?
 `make`
