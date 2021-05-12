@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.9'
 services:
   proxy:
     container_name: nginx_proxy 
@@ -6,12 +6,12 @@ services:
       context: proxy
       dockerfile: Dockerfile
     restart: always
-    depends_on:
-      - backend
     networks:
       - app
     ports:
       - 80:80
+    links:
+      - backend
     deploy:
       resources:
         limits:
@@ -45,14 +45,14 @@ services:
       context: golang
       dockerfile: Dockerfile
     restart: always
-    ports:
-      - 8080:8080
+    expose:
+      - "8080"
     depends_on:
       - db
-    environment:
-      RDS_HOSTNAME: db
     networks:
       - app
+    environment:
+      RDS_HOSTNAME: db
     deploy:
       resources:
         limits:
