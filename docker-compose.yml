@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.9'
 services:
   proxy:
     container_name: nginx_proxy 
@@ -6,18 +6,17 @@ services:
       context: proxy
       dockerfile: Dockerfile
     restart: always
-    depends_on:
-      - backend
     networks:
       - app
     ports:
       - 80:80
+    links:
+      - backend
     deploy:
       resources:
         limits:
           cpus: '1'
           memory: 500M
-
 
   db:
     container_name: postgres_db 
@@ -46,19 +45,33 @@ services:
       context: golang
       dockerfile: Dockerfile
     restart: always
-    ports:
-      - 8080:8080
+    expose:
+      - "8080"
     depends_on:
       - db
-    environment:
-      RDS_HOSTNAME: db
     networks:
       - app
+    environment:
+      RDS_HOSTNAME: db
     deploy:
       resources:
         limits:
           cpus: '1'
           memory: 500M
+      mode: replicated
+      replicas: 4
+      placement:
+        max_replicas_per_node: 1
+      endpoint_mode: dnsrr
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
 
 networks:
   app:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.200.0/24

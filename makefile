@@ -1,10 +1,11 @@
 default_target: build run
 
-build: create-volume
+build: 
 	@docker-compose build
 
 run:
-	@docker-compose up
+	@docker-compose up -d
+	@docker-compose scale backend=4
 
 clean:
 	@docker-compose down
