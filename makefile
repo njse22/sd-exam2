@@ -1,6 +1,6 @@
 default_target: build run
 
-build: create-volume
+build: 
 	@docker-compose build
 
 run:
